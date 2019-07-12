@@ -52,10 +52,6 @@ func (seg *Segmenter) LoadDictionary(files string) {
 		}
 
 		reader := bufio.NewReader(dictFile)
-		var text string
-		var freqText string
-		var frequency int
-		var pos string
 		var arr []string
 
 		// 逐行读入分词
@@ -65,35 +61,15 @@ func (seg *Segmenter) LoadDictionary(files string) {
 				break
 			}
 			arr = strings.Split((string(line)), "|")
-			size := len(arr)
 
-			if size == 0 {
-				// 文件结束
-				break
-			} else if size < 2 {
-				// 无效行
+			pos := ""
+			if len(arr) < 2 {
 				continue
-			} else if size == 2 {
-				// 没有词性标注时设为空字符串
-				pos = ""
-			}
-			text, freqText = arr[0], arr[1]
-
-			// 解析词频
-			frequency, err = strconv.Atoi(freqText)
-			if err != nil {
-				continue
+			} else if len(arr) > 2 {
+				pos = arr[2]
 			}
 
-			// 过滤频率太小的词
-			if frequency < minTokenFrequency {
-				continue
-			}
-
-			// 将分词添加到字典中
-			words := splitTextToWords([]byte(text))
-			token := Token{text: words, frequency: frequency, pos: pos}
-			seg.dict.addToken(token)
+			seg.AddWord(arr[0], arr[1], pos)
 		}
 	}
 
@@ -133,6 +109,24 @@ func (seg *Segmenter) LoadDictionary(files string) {
 	}
 
 	log.Println("sego词典载入完毕")
+}
+
+func (seg *Segmenter) AddWord(text, freqText, pos string) {
+	// 解析词频
+	frequency, err := strconv.Atoi(freqText)
+	if err != nil {
+		return
+	}
+
+	// 过滤频率太小的词
+	if frequency < minTokenFrequency {
+		return
+	}
+
+	// 将分词添加到字典中
+	words := splitTextToWords([]byte(text))
+	token := Token{text: words, frequency: frequency, pos: pos}
+	seg.dict.addToken(token)
 }
 
 // 对文本分词
