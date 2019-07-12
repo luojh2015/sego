@@ -28,12 +28,13 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/huichen/sego"
 	"log"
 	"os"
 	"runtime"
 	"runtime/pprof"
 	"time"
+
+	"github.com/luojh2015/sego"
 )
 
 var (
@@ -64,7 +65,7 @@ func main() {
 	if *memprofile != "" {
 		f, err := os.Create(*memprofile)
 		if err != nil {
-			log.Fatal(err)
+			log.Panic(err)
 		}
 		pprof.WriteHeapProfile(f)
 		defer f.Close()
@@ -73,7 +74,7 @@ func main() {
 	// 打开将要分词的文件
 	file, err := os.Open("../testdata/bailuyuan.txt")
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	defer file.Close()
 
@@ -94,7 +95,7 @@ func main() {
 	if *output != "" {
 		of, err = os.Create(*output)
 		if err != nil {
-			log.Fatal(err)
+			log.Panic(err)
 		}
 		defer of.Close()
 	}
@@ -106,7 +107,7 @@ func main() {
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
-			log.Fatal(err)
+			log.Panic(err)
 		}
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()

@@ -5,11 +5,12 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/huichen/sego"
 	"log"
 	"os"
 	"runtime"
 	"time"
+
+	"github.com/luojh2015/sego"
 )
 
 var (
@@ -37,7 +38,7 @@ func main() {
 	// 打开将要分词的文件
 	file, err := os.Open("../testdata/bailuyuan.txt")
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	defer file.Close()
 

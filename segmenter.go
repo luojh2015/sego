@@ -48,7 +48,8 @@ func (seg *Segmenter) LoadDictionary(files string) {
 		dictFile, err := os.Open(file)
 		defer dictFile.Close()
 		if err != nil {
-			log.Fatalf("无法载入字典文件 \"%s\" \n", file)
+			log.Printf("无法载入字典文件 \"%s\" \n", file)
+			continue
 		}
 
 		reader := bufio.NewReader(dictFile)
@@ -89,6 +90,10 @@ func (seg *Segmenter) LoadDictionary(files string) {
 			token := Token{text: words, frequency: frequency, pos: pos}
 			seg.dict.addToken(token)
 		}
+	}
+
+	if seg.dict.TotalFrequency() == 0 {
+		return
 	}
 
 	// 计算每个分词的路径值，路径值含义见Token结构体的注释
@@ -135,7 +140,6 @@ func (seg *Segmenter) LoadDictionary(files string) {
 func (seg *Segmenter) Segment(bytes []byte) []Segment {
 	return seg.internalSegment(bytes, false)
 }
-
 
 func (seg *Segmenter) InternalSegment(bytes []byte, searchMode bool) []Segment {
 	return seg.internalSegment(bytes, searchMode)
