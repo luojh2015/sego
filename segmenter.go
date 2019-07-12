@@ -68,8 +68,13 @@ func (seg *Segmenter) LoadDictionary(files string) {
 			} else if len(arr) > 2 {
 				pos = arr[2]
 			}
+			// 解析词频
+			frequency, err := strconv.Atoi(arr[1])
+			if err != nil {
+				return
+			}
 
-			seg.AddWord(arr[0], arr[1], pos)
+			seg.AddWord(arr[0], pos, frequency)
 		}
 	}
 
@@ -111,13 +116,7 @@ func (seg *Segmenter) LoadDictionary(files string) {
 	log.Println("sego词典载入完毕")
 }
 
-func (seg *Segmenter) AddWord(text, freqText, pos string) {
-	// 解析词频
-	frequency, err := strconv.Atoi(freqText)
-	if err != nil {
-		return
-	}
-
+func (seg *Segmenter) AddWord(text, pos string, frequency int) {
 	// 过滤频率太小的词
 	if frequency < minTokenFrequency {
 		return
